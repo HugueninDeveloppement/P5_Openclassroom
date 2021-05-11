@@ -4,8 +4,10 @@ let detailsContainer = document.getElementById('detailProduit');
 let showNbrProducts = document.getElementById('nbreArticle');
 let panierContainer = document.getElementById('panierContainer');
 
+//import {showQuantityProductsInCard} from "./modules/module";
+
 // fetch all products
-const productsApiCall = async function() {
+const allProductsFromApi = async () => {
   try{
     let response = await fetch(camerasUrl)
     if (response.ok){
@@ -21,8 +23,7 @@ const productsApiCall = async function() {
 
 
 //affichage des articles sur la page d'accueil, utilisation de bootstrap pour la mise en forme
-function showAllProducts(dataProducts){
-
+const showAllProducts = (dataProducts) => {
     if (productsContainer && dataProducts) {      
       const products = dataProducts;
       products.map(article =>{        
@@ -53,7 +54,7 @@ function showAllProducts(dataProducts){
 }
 
 //fonction pour l'ecoute du click details et recuperation du nom du produit
-function clickShowDetails(dataProducts){
+const clickShowDetails = (dataProducts) => {
   let btnProductDetails =document.querySelectorAll("button.productLink");
   for(a=0; a<btnProductDetails.length ;a++){
       let btn = btnProductDetails[a];       
@@ -66,7 +67,7 @@ function clickShowDetails(dataProducts){
   }
 }
 
-function nbrCard(){
+const showQuantityProductsInCard = () => {
   let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
   let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
 if(nbrArticleSelectionnes){
@@ -79,8 +80,8 @@ if(nbrArticleSelectionnes){
 
 
 
-productsApiCall();
-nbrCard();
+allProductsFromApi();
+showQuantityProductsInCard();
 
 
 

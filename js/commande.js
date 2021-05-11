@@ -27,12 +27,12 @@ const saveOrderInLocalstorage =()=>{
             orderId,
             statut};
 
-    if(registeredOrder){        
+    if(registeredOrder && saveCommand.orderId != null){        
         registeredOrder = {
             ...registeredOrder,
             [saveCommand.orderId]:saveCommand
         };
-    }else{
+    }else if(saveCommand.orderId != null){
     registeredOrder = {[saveCommand.orderId]:saveCommand};
     }
     localStorage.setItem('registeredOrder',JSON.stringify(registeredOrder));
@@ -43,7 +43,8 @@ const saveOrderInLocalstorage =()=>{
 const displayValidationCommande =()=>{
     const commandeContainer = document.getElementById('commande_list');
     const registeredOrder = getAndParseRegisteredOrder();
-    Object.values(registeredOrder).map( command =>{
+    if (registeredOrder) {
+        Object.values(registeredOrder).map( command =>{
         commandeContainer.innerHTML += `
         <div class="command col-11 text-center">
             <span class="commandCostValue col-2">${command.totalPrice},00€</span>
@@ -52,9 +53,17 @@ const displayValidationCommande =()=>{
         </div>
         `
         })
+    } else {
+        commandeContainer.innerHTML =  `
+        <div class="command col-11 text-center">
+            <h2>Aucune commande en cours</h2>
+        </div>
+        `
+    }
+    
 }
 
-const nbrProductInCard=()=>{
+const showQuantityProductsInCard=()=>{
     let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
     let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
   if(nbrArticleSelectionnes){
@@ -67,4 +76,4 @@ const nbrProductInCard=()=>{
 
 saveOrderInLocalstorage();
 displayValidationCommande();
-nbrProductInCard();
+showQuantityProductsInCard();

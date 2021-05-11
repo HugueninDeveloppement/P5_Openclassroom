@@ -2,7 +2,7 @@ const formulaire = document.getElementById('costFormulaire');
 const url ='http://localhost:3000/api/cameras/order'
 
 
-const nbrProductInCard=()=>{
+const showQuantityProductsInCar=()=>{
     let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
     let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
   if(nbrArticleSelectionnes){
@@ -39,7 +39,7 @@ const totalCost = ()=>{
   return totalCost;   
 }
 
-function displayRecapCost() {  
+const displayRecapCost = () =>{  
   const panierContainer = document.getElementById('articlesPanier');   
   const itemsJson = getProductsInCard();
   const total = totalCost(); 
@@ -70,7 +70,7 @@ function displayRecapCost() {
   }
 }
  
-function checkUserNameAndCityName(){
+const checkUserNameAndCityName = () =>{
   const userLastName = document.getElementById('lastName').value;
   const userFirstName = document.getElementById('firstName').value;  
   const userCity = document.getElementById('city').value;
@@ -84,7 +84,7 @@ function checkUserNameAndCityName(){
 }
 
 
-function checkEmail(){
+const checkEmail = () => {
   const userEmail = document.getElementById('email').value;
   const regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -95,7 +95,7 @@ function checkEmail(){
   }
 }
 
-function checkAddress(){
+const checkAddress=()=>{
   const userAddress = document.getElementById('address').value;
   const regexAdress = /^\d+\s[A-z]+\s[A-z]+/;
 
@@ -106,7 +106,7 @@ function checkAddress(){
   }
 }
 
-function checkAllInputNotEmpty(){
+const checkAllInputNotEmpty = () => {
   const inputs =document.getElementsByTagName('input');
   const error = document.getElementById('error');
   let errorMsg =""
@@ -125,7 +125,7 @@ function checkAllInputNotEmpty(){
 }
 
 
-function checkAllInputRegex(){
+const checkAllInputRegex = () => {
   if(checkUserNameAndCityName()==true && checkEmail()==true && checkAddress()==true ){
       return true;
   }else{
@@ -135,7 +135,8 @@ function checkAllInputRegex(){
 
 
 
-async function formatData(){
+const formatData = async () => {
+  if(checkAllInputRegex() === true){
   let dataform = {
     lastName:formulaire['lastName'].value,
     firstName:formulaire['firstName'].value,
@@ -144,6 +145,7 @@ async function formatData(){
     email:formulaire['email'].value
   }
   return dataform;
+}
 }
 
 
@@ -166,13 +168,12 @@ const postData = async (url) =>{
 
 const clearLocalstorage = ()=>{
   localStorage.removeItem('nbrProductsInCard');
-  localStorage.removeItem('arrayId');
   localStorage.removeItem('productsInCard');
+  localStorage.removeItem('arrayId')
 }
 
 const redirectToConfirm =(confirmationFromAPI)=>{
   clearLocalstorage();
-  console.log(confirmationFromAPI);
   const totalPrice = confirmationFromAPI.products
   .map( product =>(product.price)/100)
   .reduce((total,price)=>total + price)
@@ -191,5 +192,5 @@ formulaire.addEventListener('submit',function(event){
 
 })
 
-nbrProductInCard();
+showQuantityProductsInCar();
 displayRecapCost();

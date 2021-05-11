@@ -1,13 +1,27 @@
-const checkIfLocalstorage  = () => localStorage.length > 0 ? true : false;
+//const checkIfLocalstorage  = () => localStorage.length > 0 ? true : false;
+ 
 const getItemsInLocalStorage = () =>{
    const items =localStorage.getItem('productsInCard');
-   return items; 
+   if(items !==null){
+   return items;
+   }    
 } 
+
+
 
 const getNbrItemsInLocalStorage =() =>{
     const nbrItems =localStorage.getItem('nbrProductsInCard');
     return nbrItems; 
 } 
+
+const checkIfItemsInLocalstorage=()=>{
+    const items = getItemsInLocalStorage();
+    if(items){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 const getProductsInCard =()=>{
     const itemsJson = localStorage.getItem('productsInCard');
@@ -19,29 +33,24 @@ const parseAndFormatProductsInCard =()=>{
     const items =Object.values(JSON.parse(itemsJson));
     return items;
 }
-// function pour l'affichage du nombre d'article total presesent dans le panier
-function nbrCard (){
-    const nbrItems = getNbrItemsInLocalStorage();
-    const nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
-  if(nbrItems){
+// function pour l'affichage du nombre d'article total present dans le panier
+const showQuantityProductsInCard=()=>{
+    const nbrArticleSelectionnes = getNbrItemsInLocalStorage();
+    let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
+  if(nbrArticleSelectionnes){
     nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier position-absolute top-10 start-100 translate-middle badge rounded-pill bg-secondary');
-    nbreArticleContainer[0].textContent = nbrItems;
-  }else if (nbrItems == 0) {
-      nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
-      localStorage.removeItem('nbrProductsInCard');
-  } else {    
+    nbreArticleContainer[0].textContent = nbrArticleSelectionnes;
+  }else{    
     nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
   }
-
 }
 
 
 //function d'affichage des produits selectionnés sur la page panier
-function showPanier() {  
+const showPanier = ()=> {  
     const panierContainer = document.getElementById('articlesPanier');   
-    const itemsJson = getProductsInCard();
-    if (itemsJson) {
-      const items = parseAndFormatProductsInCard();
+    const items = parseAndFormatProductsInCard();
+    if (items) {      
       items.forEach(product => {        
         panierContainer.innerHTML += `    
         <div class="article"  id="${product.name}">
@@ -67,7 +76,7 @@ function showPanier() {
             </div>
         </div>`
       });
-    }
+    
     panierContainer.innerHTML += `
             <div class="commandeTotalContainer d-flex justify-content-between">
               <button type="button" id="confirmPanier" class="btn btn-secondary text-white btn-sm col-4">confirmer la commande</button>
@@ -78,6 +87,7 @@ function showPanier() {
             </div>
           `    
     totalcost.textContent = totalCost() +',00€';
+    } 
 }
 
 const takeDomElement = () =>{
@@ -105,8 +115,14 @@ const totalCost = ()=>{
     return totalCost;   
 }
 
+const clearLocalstorage = ()=>{
+    localStorage.removeItem('nbrProductsInCard');
+    localStorage.removeItem('arrayId');
+    localStorage.removeItem('productsInCard');
+  }
+
 //function pour augmenter la quantite d'une reference
-function stepDown() {
+const stepDown = () => {
     const btnDown = takeDomElement().btnDown;
 
     for (d = 0; d < btnDown.length; d++) {
@@ -135,19 +151,21 @@ function stepDown() {
             }
 
             if(nbrProductsInCard == 0){
-                localStorage.clear();
+                clearLocalstorage();
                 }else{
                 localStorage.setItem('productsInCard',JSON.stringify(items));
                 localStorage.setItem('nbrProductsInCard',nbrProductsInCard);                
             }
-            nbrCard ();
             document.location.reload();
+            
         })        
     }
+    showQuantityProductsInCard();
 }
 
-function stepUp() {
-    const items = parseAndFormatProductsInCard();    
+const stepUp = () => {
+    if(items){
+    const items = parseAndFormatProductsInCard();
     const btnUp = takeDomElement().btnUp;
     for (g = 0; g < btnUp.length; g++) {
         //on cible un article
@@ -175,9 +193,10 @@ function stepUp() {
             localStorage.setItem('productsInCard',JSON.stringify(items));
             localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
             totalcost.textContent= totalCost()+',00€';
-            nbrCard ();
+            showQuantityProductsInCard();
         })      
     }
+}
 }
 
 
@@ -185,7 +204,7 @@ function stepUp() {
 
 
 // function pour supprimer une reference du panier
-function removeProduct(){       
+const removeProduct = () => {       
     const removeBtn = takeDomElement().removeBtn;
     for (f = 0; f < removeBtn.length; f++) {
         //on cible un article
@@ -203,21 +222,19 @@ function removeProduct(){
 
             //on supprime l'article de la liste des article
             items = items.filter(product=> product.name !== nameProduct);
-            
-            console.log(items);
             //on retire l'article à l'affichage 
             productContainer.remove();
 
             //on geres le cas si le nombre de produit present dans le panier est 0
             if(nbrProductsInCard == 0){
-            localStorage.clear();
+            clearLocalstorage();
             window.location.reload();
             }else{
             localStorage.setItem('productsInCard',JSON.stringify(items));
             localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
             }
             totalcost.textContent= totalCost()+',00€';
-            nbrCard ();
+            showQuantityProductsInCard();
         })
         
     }
@@ -225,7 +242,7 @@ function removeProduct(){
 }
 
 
-function validationCommand() {
+const validationCommand = () => {
     const btnConfirm = document.getElementById('confirmPanier');
     btnConfirm.addEventListener('click', function (event){
         let items = parseAndFormatProductsInCard();
@@ -242,8 +259,7 @@ function validationCommand() {
 }
 
 
-if (checkIfLocalstorage() === true) {
-
+if (checkIfItemsInLocalstorage() == true) {
     showPanier();
     removeProduct();
     stepUp();
@@ -253,7 +269,8 @@ if (checkIfLocalstorage() === true) {
     panierContainer.innerHTML +='<div id="emptyCard"><span class="text-white"> vous n\'avez aucun article dans votre panier. </span></div>';
     }
 
-nbrCard ();
+    showQuantityProductsInCard();
+
 
 
 

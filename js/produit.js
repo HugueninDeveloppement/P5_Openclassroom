@@ -11,7 +11,7 @@ const getProductId = (url) => {
 };
 
 // fetch one product by id
-const oneApiCall = async function (productId){
+const OneProductFromaPI = async (productId)=>{
     try{
       const response =await fetch (camerasUrl+"/"+productId)
       if(response.ok){
@@ -24,12 +24,13 @@ const oneApiCall = async function (productId){
       console.log(e)
     }  
   };
+
 const formatResponseKeys = (dataJson)=>{
   const dataKeys = Object.keys(dataJson);
   return dataKeys;
 };
 
-function showOne (oneCamera){
+const showOne = (oneCamera) => {
     const articleContainer = document.getElementById('detailProduit');
     const articleJson= oneCamera;
     const articleKeys = formatResponseKeys(oneCamera);
@@ -91,16 +92,15 @@ function showOne (oneCamera){
     
 };
 
-
-function addToCard(articleJson) {
+const addToCard = (articleJson) => {
   const btnAdd = document.getElementById('btnAdd')
   btnAdd.addEventListener('click',function(event){
   setItemInCard(articleJson);
-  nbrProductsInCard();  
+  addOneQuantityInCard();  
   })
 }
 
-function nbrProductsInCard() {
+const addOneQuantityInCard = () => {
   let nbrProductsInCard = localStorage.getItem('nbrProductsInCard');
   if(nbrProductsInCard){
     nbrProductsInCard = parseInt(nbrProductsInCard);
@@ -109,10 +109,10 @@ function nbrProductsInCard() {
     nbrProductsInCard = 1;
   }
   localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
-  nbrCard ();
+  showQuantityProductsInCard();
 }
 
-function setItemInCard(articleJson) {
+const setItemInCard = (articleJson) => {
   let products = localStorage.getItem('productsInCard');
   const productId = articleJson._id;
   const productName = articleJson.name;
@@ -141,16 +141,16 @@ function setItemInCard(articleJson) {
   localStorage.setItem('productsInCard',JSON.stringify(products));
 }
 
-function nbrCard (){
-    let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
-    let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
-  if(nbrArticleSelectionnes){
-    nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier position-absolute top-10 start-100 translate-middle badge rounded-pill bg-secondary');
-    nbreArticleContainer[0].textContent = nbrArticleSelectionnes;
-  }else{    
-    nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
-  }
+const showQuantityProductsInCard=()=>{
+  let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
+  let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
+if(nbrArticleSelectionnes){
+  nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier position-absolute top-10 start-100 translate-middle badge rounded-pill bg-secondary');
+  nbreArticleContainer[0].textContent = nbrArticleSelectionnes;
+}else{    
+  nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
+}
 }
 
-oneApiCall(getProductId(url));
-nbrCard ();
+OneProductFromaPI(getProductId(url));
+showQuantityProductsInCard();
