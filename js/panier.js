@@ -1,10 +1,8 @@
-//const checkIfLocalstorage  = () => localStorage.length > 0 ? true : false;
+const checkIfLocalstorage  = () => getItemsInLocalStorage() ? true : false;
  
 const getItemsInLocalStorage = () =>{
-   const items =localStorage.getItem('productsInCard');
-   if(items !==null){
-   return items;
-   }    
+   const items =localStorage.getItem('productsInCard');   
+   return items;    
 } 
 
 
@@ -14,14 +12,14 @@ const getNbrItemsInLocalStorage =() =>{
     return nbrItems; 
 } 
 
-const checkIfItemsInLocalstorage=()=>{
+/*const checkIfItemsInLocalstorage=()=>{
     const items = getItemsInLocalStorage();
     if(items){
         return true;
     }else{
         return false;
     }
-}
+}**/
 
 const getProductsInCard =()=>{
     const itemsJson = localStorage.getItem('productsInCard');
@@ -232,8 +230,8 @@ const removeProduct = () => {
             }else{
             localStorage.setItem('productsInCard',JSON.stringify(items));
             localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
-            }
             totalcost.textContent= totalCost()+',00€';
+            }
             showQuantityProductsInCard();
         })
         
@@ -259,7 +257,7 @@ const validationCommand = () => {
 }
 
 
-if (checkIfItemsInLocalstorage() == true) {
+if (checkIfLocalstorage()) {
     showPanier();
     removeProduct();
     stepUp();

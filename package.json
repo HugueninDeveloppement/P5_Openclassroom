@@ -1,0 +1,43 @@
+{
+  "name": "Orinoco_camera",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "dev": "webpack --mode=development",
+    "start": "webpack-dev-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "dependencies": {
+    "clone-deep": "^4.0.1",
+    "find-up": "^4.1.0",
+    "locate-path": "^5.0.0",
+    "node-releases": "^1.1.72",
+    "npm-run-path": "^4.0.1",
+    "onetime": "^5.1.2",
+    "p-locate": "^4.1.0",
+    "p-try": "^2.2.0",
+    "path-key": "^3.1.1",
+    "path-exists": "^4.0.0",
+    "path-parse": "^1.0.6",
+    "pkg-dir": "^4.2.0",
+    "punycode": "^2.1.1",
+    "randombytes": "^2.1.0",
+    "resolve-from": "^5.0.0",
+    "resolve-cwd": "^3.0.0",
+    "safe-buffer": "^5.2.1",
+    "serialize-javascript": "^5.0.1",
+    "shallow-clone": "^3.0.1",
+    "shebang-command": "^2.0.0",
+    "shebang-regex": "^3.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "description": ""
+}

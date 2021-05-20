@@ -11,33 +11,11 @@ const getTotalPriceInUrl =()=>{
     return totalPrice; 
 }
 
-const getAndParseRegisteredOrder =()=>{
+const getAndParseRegisteredOrder = () => {
     let registeredOrder = localStorage.getItem('registeredOrder');
-    registeredOrder =JSON.parse(registeredOrder);
+    registeredOrder = JSON.parse(registeredOrder);
     return registeredOrder;
 }
-
-const saveOrderInLocalstorage =()=>{
-    let registeredOrder = getAndParseRegisteredOrder();    
-    const totalPrice = getTotalPriceInUrl();
-    const orderId = getOrderIdInUrl();
-    const statut = "En cours, Merçi pour votre commande";
-    const saveCommand = {
-            totalPrice,
-            orderId,
-            statut};
-
-    if(registeredOrder && saveCommand.orderId != null){        
-        registeredOrder = {
-            ...registeredOrder,
-            [saveCommand.orderId]:saveCommand
-        };
-    }else if(saveCommand.orderId != null){
-    registeredOrder = {[saveCommand.orderId]:saveCommand};
-    }
-    localStorage.setItem('registeredOrder',JSON.stringify(registeredOrder));
-}
-
 
 
 const displayValidationCommande =()=>{
@@ -59,8 +37,7 @@ const displayValidationCommande =()=>{
             <h2>Aucune commande en cours</h2>
         </div>
         `
-    }
-    
+    }    
 }
 
 const showQuantityProductsInCard=()=>{
@@ -74,6 +51,5 @@ const showQuantityProductsInCard=()=>{
   }
 }
 
-saveOrderInLocalstorage();
 displayValidationCommande();
 showQuantityProductsInCard();

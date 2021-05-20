@@ -172,15 +172,47 @@ const clearLocalstorage = ()=>{
   localStorage.removeItem('arrayId')
 }
 
+const getAndParseRegisteredOrder = () => {
+    let registeredOrder = localStorage.getItem('registeredOrder');
+    registeredOrder = JSON.parse(registeredOrder);
+    return registeredOrder;
+}
+
+
+const saveOrderInLocalstorage = (id, total) => {
+    let registeredOrder = getAndParseRegisteredOrder();
+    const orderId = id;
+    const totalPrice = total;
+    const statut = "En cours, Merçi pour votre commande";
+    const saveCommand = {
+        totalPrice,
+        orderId,
+        statut
+    };
+
+    if (registeredOrder && saveCommand.orderId != null) {
+        registeredOrder = {
+            ...registeredOrder,
+            [saveCommand.orderId]: saveCommand
+        };
+    } else if (saveCommand.orderId != null) {
+        registeredOrder = { [saveCommand.orderId]: saveCommand };
+    }
+    localStorage.setItem('registeredOrder', JSON.stringify(registeredOrder));
+}
+
 const redirectToConfirm =(confirmationFromAPI)=>{
   clearLocalstorage();
   const totalPrice = confirmationFromAPI.products
   .map( product =>(product.price)/100)
   .reduce((total,price)=>total + price)
-  const orderId = confirmationFromAPI.orderId;
+    const orderId = confirmationFromAPI.orderId;
+    saveOrderInLocalstorage(orderId, totalPrice);
   let url = `${window.location.origin}/html/commande.html?orderId=${orderId}&totalPrice=${totalPrice}`;
   window.location.href = url;
 }
+
+
 
 formulaire.addEventListener('submit',function(event){ 
   event.preventDefault();
