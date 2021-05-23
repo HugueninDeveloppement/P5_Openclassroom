@@ -167,15 +167,14 @@ const removeProduct = () => {
                 let items = JSON.parse(getItemsInLocalStorage());
                 //on recupere et on modifie le nbr d'article present dans le panier
                 let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
-                console.log(nbrProductsInCard)
-                console.log(items[idProduct].panier)
+
                 nbrProductsInCard -= items[idProduct].panier;
-                console.log(nbrProductsInCard)
+
                 delete items[idProduct];
                 console.log(items)
                 //on retire l'article à l'affichage 
                 productContainer.remove();
-                console.log(nbrProductsInCard)
+
                 //on geres le cas si le nombre de produit present dans le panier est 0
                 if (nbrProductsInCard == 0) {
                     clearLocalstorage();
@@ -203,16 +202,12 @@ const stepDown = () => {
             btnDownClick.addEventListener('click', function (event) {
                 const idProduct = btnDownClick.parentElement.parentElement.getAttribute('id');
                 let items = JSON.parse(getItemsInLocalStorage());
-                console.log(idProduct)
-                console.log(items[idProduct].panier)
                 const nbrPanierContainer = btnDownClick.nextElementSibling;
                 const itemCostContainer = btnDownClick.parentElement.nextElementSibling.firstElementChild;
                 let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
 
                 if (items[idProduct].panier === 1) {
-                    console.log('ton panier est egale à 1')
                     const productContainer = btnDownClick.parentElement.parentElement;
-                    console.log(nbrProductsInCard)
                     nbrProductsInCard -= 1;
                     delete items[idProduct];
                     //on retire l'article à l'affichage 
@@ -220,15 +215,21 @@ const stepDown = () => {
                 } else {
                     items[idProduct].panier -= 1;
                     btnDownClick.nextElementSibling.textContent = items[idProduct].panier;
+                    
+
                     nbrProductsInCard = parseInt(nbrProductsInCard);
                     nbrProductsInCard -= 1;
                 }
 
                 if (nbrProductsInCard == 0) {
-                    console.log('ton panier est egale à 0')
                     clearLocalstorage();
                     window.location.reload();
                 } else {
+                    //on met a jours la quantite sur la reference pour l'affichage
+                    nbrPanierContainer.textContent = items[idProduct].panier;
+
+                    itemCostContainer.textContent = items[idProduct].panier * items[idProduct].price + ',00€';
+
                     localStorage.setItem('productsInCard', JSON.stringify(items));
                     localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
                     totalcost.textContent = totalCost() + ',00€';
