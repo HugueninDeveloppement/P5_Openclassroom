@@ -4,9 +4,8 @@ let detailsContainer = document.getElementById('detailProduit');
 let showNbrProducts = document.getElementById('nbreArticle');
 let panierContainer = document.getElementById('panierContainer');
 
-//import {showQuantityProductsInCard} from "./modules/module";
 
-// fetch all products
+// fetch retourne une liste de produit au format .json
 const allProductsFromApi = async () => {
     try {
         let response = await fetch(camerasUrl)
@@ -67,6 +66,8 @@ const clickShowDetails = (dataProducts) => {
     }
 }
 
+
+//affichage du nombre d'article dans le header
 const showQuantityProductsInCard = () => {
     let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
     let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');

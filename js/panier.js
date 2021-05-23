@@ -1,34 +1,29 @@
-const checkIfLocalstorage  = () => getItemsInLocalStorage() ? true : false;
- 
+// Vérifie qu'il y a des articles dans le panier (booléen)
+const checkIfLocalstorage = () => getItemsInLocalStorage() ? true : false;
+
+// Récupere les article dans le localstorage (.json)
 const getItemsInLocalStorage = () =>{
    const items =localStorage.getItem('productsInCard');   
    return items;    
 } 
 
-
-
+//Récupere le nombre d'article dans le panier (number)
 const getNbrItemsInLocalStorage =() =>{
     const nbrItems =localStorage.getItem('nbrProductsInCard');
     return nbrItems; 
 } 
 
-/*const checkIfItemsInLocalstorage=()=>{
-    const items = getItemsInLocalStorage();
-    if(items){
-        return true;
-    }else{
-        return false;
-    }
-}**/
-
-const getProductsInCard =()=>{
-    const itemsJson = localStorage.getItem('productsInCard');
-    return itemsJson;
+//parse la liste des articles
+const parseItems = () => {
+    const itemsJson = getItemsInLocalStorage();
+    const items = JSON.parse(itemsJson);
+    return items
 }
 
+//renvoie la liste des article pour l'affichage 
 const parseAndFormatProductsInCard =()=>{
-    const itemsJson = getProductsInCard();
-    const items =Object.values(JSON.parse(itemsJson));
+    const itemsParse = parseItems();
+    const items = Object.values(itemsParse);
     return items;
 }
 // function pour l'affichage du nombre d'article total present dans le panier
@@ -45,13 +40,13 @@ const showQuantityProductsInCard=()=>{
 
 
 //function d'affichage des produits selectionnés sur la page panier
-const showPanier = ()=> {  
+const showPanier = () => { 
     const panierContainer = document.getElementById('articlesPanier');   
     const items = parseAndFormatProductsInCard();
-    if (items) {      
+    if (checkIfLocalstorage) {      
       items.forEach(product => {        
         panierContainer.innerHTML += `    
-        <div class="article"  id="${product.name}">
+        <div class="article"  id="${product.id}">
             <div class="imagepanier">
                 <img class="imagearticle" src="${product.img}"> 
             </div>
@@ -88,6 +83,7 @@ const showPanier = ()=> {
     } 
 }
 
+//recupere les elements du DOM 
 const takeDomElement = () =>{
     const nbrPanier = document.getElementsByClassName('nbrPanier');
     const totalcost = document.getElementById('totalcost');
@@ -113,72 +109,30 @@ const totalCost = ()=>{
     return totalCost;   
 }
 
+//vide le localstorage sans effacer les anciennes commandes
 const clearLocalstorage = ()=>{
     localStorage.removeItem('nbrProductsInCard');
-    localStorage.removeItem('arrayId');
     localStorage.removeItem('productsInCard');
-  }
-
-//function pour augmenter la quantite d'une reference
-const stepDown = () => {
-    const btnDown = takeDomElement().btnDown;
-
-    for (d = 0; d < btnDown.length; d++) {
-        //on cible un article
-        const btnDownClick = btnDown[d];
-        //addListener
-        btnDownClick.addEventListener('click', function (event){            
-            let items = parseAndFormatProductsInCard();
-            const productContainer = btnDownClick.parentElement.parentElement;
-            console.log(productContainer);
-            const nameProduct = btnDownClick.parentElement.previousElementSibling.previousElementSibling.textContent;           
-            const item = items.find(product => product.name === nameProduct);
-            const nbrPanierContainer = btnDownClick.previousElementSibling;
-            const itemCostContainer = btnDownClick.parentElement.nextElementSibling.firstElementChild;
-            let nbrProductsInCard = getNbrItemsInLocalStorage();
-            
-            if (item.panier == 1) {
-                nbrProductsInCard -= 1;
-                items = items.filter(product=> product.name !== nameProduct);
-                productContainer.remove();
-            } else {
-            item.panier -=1 ;
-            btnDownClick.nextElementSibling.textContent = item.panier;            
-            nbrProductsInCard = parseInt(nbrProductsInCard);
-            nbrProductsInCard -= 1;
-            }
-
-            if(nbrProductsInCard == 0){
-                clearLocalstorage();
-                }else{
-                localStorage.setItem('productsInCard',JSON.stringify(items));
-                localStorage.setItem('nbrProductsInCard',nbrProductsInCard);                
-            }
-            document.location.reload();
-            
-        })        
-    }
-    showQuantityProductsInCard();
 }
 
+//function pour augmenter la quantite d'une reference
 const stepUp = () => {
-    if(items){
-    const items = parseAndFormatProductsInCard();
+    if (checkIfLocalstorage) {
     const btnUp = takeDomElement().btnUp;
     for (g = 0; g < btnUp.length; g++) {
         //on cible un article
         const btnUpClick = btnUp[g];
         //addListener
-        btnUpClick.addEventListener('click', function (event){
-
-            const nameProduct = btnUpClick.parentElement.previousElementSibling.previousElementSibling.textContent;           
-            const item = items.find(product => product.name === nameProduct);
+        btnUpClick.addEventListener('click', function (event) {
+            const idProduct = btnUpClick.parentElement.parentElement.getAttribute('id');            
+            let items = JSON.parse(getItemsInLocalStorage());
+            const item = items[idProduct];
             const nbrPanierContainer = btnUpClick.previousElementSibling;
             const itemCostContainer = btnUpClick.parentElement.nextElementSibling.firstElementChild;
             let nbrProductsInCard = getNbrItemsInLocalStorage();
 
             //on met a jours la quantite sur la reference pour le localStorage
-            item.panier +=1 ;
+            item.panier += 1;
 
             //on met a jours la quantite sur la reference pour l'affichage
             nbrPanierContainer.textContent = item.panier;
@@ -186,60 +140,104 @@ const stepUp = () => {
             //on met a jours la quantite pour l'affichage du panier
             nbrProductsInCard = parseInt(nbrProductsInCard);
             nbrProductsInCard += 1;
-            
-            itemCostContainer.textContent = item.panier*item.price+',00€';
-            localStorage.setItem('productsInCard',JSON.stringify(items));
-            localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
-            totalcost.textContent= totalCost()+',00€';
+
+            itemCostContainer.textContent = item.panier * item.price + ',00€';
+            localStorage.setItem('productsInCard', JSON.stringify(items));
+
+            console.log(nbrProductsInCard)
+            localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
+            totalcost.textContent = totalCost() + ',00€';
             showQuantityProductsInCard();
-        })      
+        }
+        )
+        }
     }
 }
-}
-
-
-
-
 
 // function pour supprimer une reference du panier
-const removeProduct = () => {       
+const removeProduct = () => {
     const removeBtn = takeDomElement().removeBtn;
-    for (f = 0; f < removeBtn.length; f++) {
-        //on cible un article
-        const removeClick = removeBtn[f];
-        //addListener
-        removeClick.addEventListener('click', function (event) {
-            let items = parseAndFormatProductsInCard(); 
-            const nameProduct = removeClick.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
-            const productContainer = removeClick.parentElement.parentElement;
-            const item = items.find(product => product.name === nameProduct);
 
+    for (i = 0; i < removeBtn.length; i++) {
+        const removeClick = removeBtn[i];
+        removeClick.addEventListener('click', function (event){
+            const idProduct = removeClick.parentElement.parentElement.getAttribute('id');
+            const productContainer = removeClick.parentElement.parentElement;            
+        let items = JSON.parse(getItemsInLocalStorage());
             //on recupere et on modifie le nbr d'article present dans le panier
-            let nbrProductsInCard = getNbrItemsInLocalStorage();
-            nbrProductsInCard -= item.panier;
-
-            //on supprime l'article de la liste des article
-            items = items.filter(product=> product.name !== nameProduct);
+            let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
+            console.log(nbrProductsInCard)
+            console.log(items[idProduct].panier)
+            nbrProductsInCard -= items[idProduct].panier;
+            console.log(nbrProductsInCard)
+            delete items[idProduct];
+            console.log(items)
             //on retire l'article à l'affichage 
             productContainer.remove();
-
+            console.log(nbrProductsInCard)
             //on geres le cas si le nombre de produit present dans le panier est 0
-            if(nbrProductsInCard == 0){
-            clearLocalstorage();
-            window.location.reload();
-            }else{
-            localStorage.setItem('productsInCard',JSON.stringify(items));
-            localStorage.setItem('nbrProductsInCard',nbrProductsInCard);
-            totalcost.textContent= totalCost()+',00€';
+            if (nbrProductsInCard == 0) {
+                clearLocalstorage();
+                window.location.reload();
+            } else {
+                localStorage.setItem('productsInCard', JSON.stringify(items));
+                localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
+                totalcost.textContent = totalCost() + ',00€';
             }
             showQuantityProductsInCard();
         })
+    }
+}
+
+//function pour diminuer la quantite d'une reference
+const stepDown = () => {
+    const btnDown = takeDomElement().btnDown;
+
+    for (d = 0; d < btnDown.length; d++) {
+        //on cible un article
+        const btnDownClick = btnDown[d];
+        //addListener
+        btnDownClick.addEventListener('click', function (event){ 
+            const idProduct = btnDownClick.parentElement.parentElement.getAttribute('id');            
+            let items = JSON.parse(getItemsInLocalStorage());
+            console.log(idProduct)
+            console.log(items[idProduct].panier)
+            const nbrPanierContainer = btnDownClick.nextElementSibling;
+            const itemCostContainer = btnDownClick.parentElement.nextElementSibling.firstElementChild;
+            let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage()); 
+
+            if (items[idProduct].panier === 1 ) {
+                console.log('ton panier est egale à 1')
+                const productContainer = btnDownClick.parentElement.parentElement;
+                console.log(nbrProductsInCard)
+                nbrProductsInCard -= 1;
+                delete items[idProduct];
+                //on retire l'article à l'affichage 
+                productContainer.remove();                                          
+            } else {
+            items[idProduct].panier -=1 ;
+            btnDownClick.nextElementSibling.textContent = items[idProduct].panier;  
+            nbrProductsInCard = parseInt(nbrProductsInCard);
+            nbrProductsInCard -= 1;  
+            }
+
+            if (nbrProductsInCard == 0) {
+                console.log('ton panier est egale à 0')
+                clearLocalstorage();
+                window.location.reload();
+            } else {
+                localStorage.setItem('productsInCard', JSON.stringify(items));
+                localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
+                totalcost.textContent = totalCost() + ',00€';
+            }
+            showQuantityProductsInCard();
+        })        
         
     }
     
 }
 
-
+//fonction d'ecoute de la validation de commande qui renvoie si ok au formulaire
 const validationCommand = () => {
     const btnConfirm = document.getElementById('confirmPanier');
     btnConfirm.addEventListener('click', function (event){
@@ -256,7 +254,7 @@ const validationCommand = () => {
     })
 }
 
-
+//affiche selon le resultat du localstorage
 if (checkIfLocalstorage()) {
     showPanier();
     removeProduct();
@@ -267,15 +265,15 @@ if (checkIfLocalstorage()) {
     panierContainer.innerHTML +='<div id="emptyCard"><span class="text-white"> vous n\'avez aucun article dans votre panier. </span></div>';
     }
 
-    showQuantityProductsInCard();
+showQuantityProductsInCard();
 
 
 
 
 
-// Check si localstorage.length > 0
-// si Localsotrage => recuperer et afficher elements
-// si !localStorage => panier vide
-// Modifier local storage
-// recueilir info user
-// envoyer commande a l'api
+/** Check si localstorage.length > 0
+ si Localsotrage => recuperer et afficher elements
+ si !localStorage => panier vide
+ Modifier local storage
+ recueilir info user
+ envoyer commande a l'api*/

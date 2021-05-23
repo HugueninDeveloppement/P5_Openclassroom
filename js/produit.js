@@ -1,6 +1,7 @@
 // Recupération du l'url du navigateur
 const url = window.location.search;
-const camerasUrl ='http://localhost:3000/api/cameras';
+const camerasUrl = 'http://localhost:3000/api/cameras';
+
 // Obtention de la requete inclus dans l'url
 const getProductId = (url) => {
 	const urlToSplit = url.split("=");
@@ -16,7 +17,7 @@ const OneProductFromaPI = async (productId)=>{
       const response =await fetch (camerasUrl+"/"+productId)
       if(response.ok){
         const dataProduct = await response.json();
-        showOne (dataProduct);        
+          showOne(dataProduct);  
       } else {
         console.log('retour du server : ', response.status)
       }
@@ -25,11 +26,13 @@ const OneProductFromaPI = async (productId)=>{
     }  
   };
 
+//formate la liste de produit pour recuperer le nom de l'option
 const formatResponseKeys = (dataJson)=>{
   const dataKeys = Object.keys(dataJson);
   return dataKeys;
 };
 
+//affichage du produit
 const showOne = (oneCamera) => {
     const articleContainer = document.getElementById('detailProduit');
     const articleJson= oneCamera;
@@ -92,6 +95,8 @@ const showOne = (oneCamera) => {
     
 };
 
+
+//fonction d'ecoute pour l'ajout au panier
 const addToCard = (articleJson) => {
   const btnAdd = document.getElementById('btnAdd')
   btnAdd.addEventListener('click',function(event){
@@ -100,6 +105,7 @@ const addToCard = (articleJson) => {
   })
 }
 
+//rajoute 1 au panier
 const addOneQuantityInCard = () => {
   let nbrProductsInCard = localStorage.getItem('nbrProductsInCard');
   if(nbrProductsInCard){
@@ -112,6 +118,7 @@ const addOneQuantityInCard = () => {
   showQuantityProductsInCard();
 }
 
+//enregistre les details du produit
 const setItemInCard = (articleJson) => {
   let products = localStorage.getItem('productsInCard');
   const productId = articleJson._id;
@@ -141,6 +148,8 @@ const setItemInCard = (articleJson) => {
   localStorage.setItem('productsInCard',JSON.stringify(products));
 }
 
+
+//mise a jour du panier
 const showQuantityProductsInCard=()=>{
   let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
   let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');

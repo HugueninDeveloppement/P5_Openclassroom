@@ -2,34 +2,28 @@ const formulaire = document.getElementById('costFormulaire');
 const url ='http://localhost:3000/api/cameras/order'
 
 
-const showQuantityProductsInCar=()=>{
-    let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
-    let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
-  if(nbrArticleSelectionnes){
-    nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier position-absolute top-10 start-100 translate-middle badge rounded-pill bg-secondary');
-    nbreArticleContainer[0].textContent = nbrArticleSelectionnes;
-  }else{    
-    nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
-  }
-}
-
+// recupere les articles validés pour la commande et les retourne au format .json
 const getProductsInCard =()=>{
   const itemsJson = localStorage.getItem('productsInCard');
   return itemsJson;
 }
 
+
+// formate le .json en objet javascript
 const parseAndFormatProductsInCard =()=>{
   const itemsJson = getProductsInCard();
   const items =Object.values(JSON.parse(itemsJson));
   return items;
 }
 
+// Récupère la liste des ID en .json et retourne un tableau 
 const getId_Array =()=>{
   let idArray = localStorage.getItem('arrayId');
   idArray = JSON.parse(idArray);
   return idArray;
 }
 
+//boucle les articles, et calcul le cout total de la commande
 const totalCost = ()=>{
   let totalCost =0 ;
   items = parseAndFormatProductsInCard();
@@ -39,6 +33,7 @@ const totalCost = ()=>{
   return totalCost;   
 }
 
+// Affiche le recap des article sous forme de liste
 const displayRecapCost = () =>{  
   const panierContainer = document.getElementById('articlesPanier');   
   const itemsJson = getProductsInCard();
@@ -69,7 +64,9 @@ const displayRecapCost = () =>{
     </div>   `
   }
 }
- 
+
+
+// Regex pour le nom , le prenom ,la ville acceptant les noms composés (booléen)  
 const checkUserNameAndCityName = () =>{
   const userLastName = document.getElementById('lastName').value;
   const userFirstName = document.getElementById('firstName').value;  
@@ -83,7 +80,7 @@ const checkUserNameAndCityName = () =>{
     }
 }
 
-
+//Regex pour l'email (booléen)
 const checkEmail = () => {
   const userEmail = document.getElementById('email').value;
   const regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -95,6 +92,8 @@ const checkEmail = () => {
   }
 }
 
+
+//Regex adresse (booléen)
 const checkAddress=()=>{
   const userAddress = document.getElementById('address').value;
   const regexAdress = /^\d+\s[A-z]+\s[A-z]+/;
@@ -106,6 +105,7 @@ const checkAddress=()=>{
   }
 }
 
+//double controle pour les champs vides(required en HTML)
 const checkAllInputNotEmpty = () => {
   const inputs =document.getElementsByTagName('input');
   const error = document.getElementById('error');
@@ -124,7 +124,7 @@ const checkAllInputNotEmpty = () => {
   }
 }
 
-
+// Controle de toutes les Regex (booléen)
 const checkAllInputRegex = () => {
   if(checkUserNameAndCityName()==true && checkEmail()==true && checkAddress()==true ){
       return true;
@@ -134,7 +134,7 @@ const checkAllInputRegex = () => {
 }
 
 
-
+// construction le l'objet user
 const formatData = async () => {
   if(checkAllInputRegex() === true){
   let dataform = {
@@ -148,7 +148,7 @@ const formatData = async () => {
 }
 }
 
-
+// fetch en asynchrone des données user et id_array
 const postData = async (url) =>{
   const orderToPost = {
     contact : await formatData(),
@@ -166,19 +166,22 @@ const postData = async (url) =>{
   .then(json => redirectToConfirm(json));
 }
 
+
+// réinitialisation du localstorage sans supprimé les anciennes commandes
 const clearLocalstorage = ()=>{
   localStorage.removeItem('nbrProductsInCard');
   localStorage.removeItem('productsInCard');
   localStorage.removeItem('arrayId')
 }
 
+// Récupere les commandes dans le localstorage
 const getAndParseRegisteredOrder = () => {
     let registeredOrder = localStorage.getItem('registeredOrder');
     registeredOrder = JSON.parse(registeredOrder);
     return registeredOrder;
 }
 
-
+// sauvegarde la commande passée dans le localstorage
 const saveOrderInLocalstorage = (id, total) => {
     let registeredOrder = getAndParseRegisteredOrder();
     const orderId = id;
@@ -201,6 +204,7 @@ const saveOrderInLocalstorage = (id, total) => {
     localStorage.setItem('registeredOrder', JSON.stringify(registeredOrder));
 }
 
+// Redirige faire la page des commandes 
 const redirectToConfirm =(confirmationFromAPI)=>{
   clearLocalstorage();
   const totalPrice = confirmationFromAPI.products
@@ -208,12 +212,12 @@ const redirectToConfirm =(confirmationFromAPI)=>{
   .reduce((total,price)=>total + price)
     const orderId = confirmationFromAPI.orderId;
     saveOrderInLocalstorage(orderId, totalPrice);
-  let url = `${window.location.origin}/html/commande.html?orderId=${orderId}&totalPrice=${totalPrice}`;
+    let url = `${window.location.origin}/htdocs/Orinoco_camera/html/commande.html?orderId=${orderId}&totalPrice=${totalPrice}`;
   window.location.href = url;
 }
 
 
-
+// Ecoute de la validation du formulaire
 formulaire.addEventListener('submit',function(event){ 
   event.preventDefault();
   if (checkAllInputNotEmpty()==true && checkAllInputRegex()==true) {      
@@ -224,5 +228,4 @@ formulaire.addEventListener('submit',function(event){
 
 })
 
-showQuantityProductsInCar();
 displayRecapCost();

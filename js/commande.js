@@ -1,23 +1,25 @@
-// Recupération des variables dans l'url avec searchParams 
+// Recupération du numero de commande dans l'url avec searchParams 
 const getOrderIdInUrl =()=>{
     const parameter = (new URL (document.location)).searchParams;
     const orderId = parameter.get('orderId')
     return orderId; 
 }
 
+// Recupération du prix total dans l'url avec searchParams
 const getTotalPriceInUrl =()=>{
     const parameter = (new URL (document.location)).searchParams;
     const totalPrice = parameter.get('totalPrice')
     return totalPrice; 
 }
 
+//Récuperation des commandes déja passé dans le localstorage
 const getAndParseRegisteredOrder = () => {
     let registeredOrder = localStorage.getItem('registeredOrder');
     registeredOrder = JSON.parse(registeredOrder);
     return registeredOrder;
 }
 
-
+// Affichage des commandes 
 const displayValidationCommande =()=>{
     const commandeContainer = document.getElementById('commande_list');
     const registeredOrder = getAndParseRegisteredOrder();
@@ -40,6 +42,7 @@ const displayValidationCommande =()=>{
     }    
 }
 
+//affichage du nombre d'article dans le header
 const showQuantityProductsInCard=()=>{
     let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');
     let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
