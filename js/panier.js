@@ -156,83 +156,87 @@ const stepUp = () => {
 
 // function pour supprimer une reference du panier
 const removeProduct = () => {
-    const removeBtn = takeDomElement().removeBtn;
+    if (checkIfLocalstorage) {
+        const removeBtn = takeDomElement().removeBtn;
 
-    for (i = 0; i < removeBtn.length; i++) {
-        const removeClick = removeBtn[i];
-        removeClick.addEventListener('click', function (event){
-            const idProduct = removeClick.parentElement.parentElement.getAttribute('id');
-            const productContainer = removeClick.parentElement.parentElement;            
-        let items = JSON.parse(getItemsInLocalStorage());
-            //on recupere et on modifie le nbr d'article present dans le panier
-            let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
-            console.log(nbrProductsInCard)
-            console.log(items[idProduct].panier)
-            nbrProductsInCard -= items[idProduct].panier;
-            console.log(nbrProductsInCard)
-            delete items[idProduct];
-            console.log(items)
-            //on retire l'article à l'affichage 
-            productContainer.remove();
-            console.log(nbrProductsInCard)
-            //on geres le cas si le nombre de produit present dans le panier est 0
-            if (nbrProductsInCard == 0) {
-                clearLocalstorage();
-                window.location.reload();
-            } else {
-                localStorage.setItem('productsInCard', JSON.stringify(items));
-                localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
-                totalcost.textContent = totalCost() + ',00€';
-            }
-            showQuantityProductsInCard();
-        })
+        for (i = 0; i < removeBtn.length; i++) {
+            const removeClick = removeBtn[i];
+            removeClick.addEventListener('click', function (event) {
+                const idProduct = removeClick.parentElement.parentElement.getAttribute('id');
+                const productContainer = removeClick.parentElement.parentElement;
+                let items = JSON.parse(getItemsInLocalStorage());
+                //on recupere et on modifie le nbr d'article present dans le panier
+                let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
+                console.log(nbrProductsInCard)
+                console.log(items[idProduct].panier)
+                nbrProductsInCard -= items[idProduct].panier;
+                console.log(nbrProductsInCard)
+                delete items[idProduct];
+                console.log(items)
+                //on retire l'article à l'affichage 
+                productContainer.remove();
+                console.log(nbrProductsInCard)
+                //on geres le cas si le nombre de produit present dans le panier est 0
+                if (nbrProductsInCard == 0) {
+                    clearLocalstorage();
+                    window.location.reload();
+                } else {
+                    localStorage.setItem('productsInCard', JSON.stringify(items));
+                    localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
+                    totalcost.textContent = totalCost() + ',00€';
+                }
+                showQuantityProductsInCard();
+            })
+        }
     }
 }
 
 //function pour diminuer la quantite d'une reference
 const stepDown = () => {
-    const btnDown = takeDomElement().btnDown;
+    if (checkIfLocalstorage) {
+        const btnDown = takeDomElement().btnDown;
 
-    for (d = 0; d < btnDown.length; d++) {
-        //on cible un article
-        const btnDownClick = btnDown[d];
-        //addListener
-        btnDownClick.addEventListener('click', function (event){ 
-            const idProduct = btnDownClick.parentElement.parentElement.getAttribute('id');            
-            let items = JSON.parse(getItemsInLocalStorage());
-            console.log(idProduct)
-            console.log(items[idProduct].panier)
-            const nbrPanierContainer = btnDownClick.nextElementSibling;
-            const itemCostContainer = btnDownClick.parentElement.nextElementSibling.firstElementChild;
-            let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage()); 
+        for (d = 0; d < btnDown.length; d++) {
+            //on cible un article
+            const btnDownClick = btnDown[d];
+            //addListener
+            btnDownClick.addEventListener('click', function (event) {
+                const idProduct = btnDownClick.parentElement.parentElement.getAttribute('id');
+                let items = JSON.parse(getItemsInLocalStorage());
+                console.log(idProduct)
+                console.log(items[idProduct].panier)
+                const nbrPanierContainer = btnDownClick.nextElementSibling;
+                const itemCostContainer = btnDownClick.parentElement.nextElementSibling.firstElementChild;
+                let nbrProductsInCard = parseInt(getNbrItemsInLocalStorage());
 
-            if (items[idProduct].panier === 1 ) {
-                console.log('ton panier est egale à 1')
-                const productContainer = btnDownClick.parentElement.parentElement;
-                console.log(nbrProductsInCard)
-                nbrProductsInCard -= 1;
-                delete items[idProduct];
-                //on retire l'article à l'affichage 
-                productContainer.remove();                                          
-            } else {
-            items[idProduct].panier -=1 ;
-            btnDownClick.nextElementSibling.textContent = items[idProduct].panier;  
-            nbrProductsInCard = parseInt(nbrProductsInCard);
-            nbrProductsInCard -= 1;  
-            }
+                if (items[idProduct].panier === 1) {
+                    console.log('ton panier est egale à 1')
+                    const productContainer = btnDownClick.parentElement.parentElement;
+                    console.log(nbrProductsInCard)
+                    nbrProductsInCard -= 1;
+                    delete items[idProduct];
+                    //on retire l'article à l'affichage 
+                    productContainer.remove();
+                } else {
+                    items[idProduct].panier -= 1;
+                    btnDownClick.nextElementSibling.textContent = items[idProduct].panier;
+                    nbrProductsInCard = parseInt(nbrProductsInCard);
+                    nbrProductsInCard -= 1;
+                }
 
-            if (nbrProductsInCard == 0) {
-                console.log('ton panier est egale à 0')
-                clearLocalstorage();
-                window.location.reload();
-            } else {
-                localStorage.setItem('productsInCard', JSON.stringify(items));
-                localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
-                totalcost.textContent = totalCost() + ',00€';
-            }
-            showQuantityProductsInCard();
-        })        
-        
+                if (nbrProductsInCard == 0) {
+                    console.log('ton panier est egale à 0')
+                    clearLocalstorage();
+                    window.location.reload();
+                } else {
+                    localStorage.setItem('productsInCard', JSON.stringify(items));
+                    localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
+                    totalcost.textContent = totalCost() + ',00€';
+                }
+                showQuantityProductsInCard();
+            })
+
+        }
     }
     
 }
