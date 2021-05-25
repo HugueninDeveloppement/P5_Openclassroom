@@ -126,25 +126,22 @@ const stepUp = () => {
         btnUpClick.addEventListener('click', function (event) {
             const idProduct = btnUpClick.parentElement.parentElement.getAttribute('id');            
             let items = JSON.parse(getItemsInLocalStorage());
-            const item = items[idProduct];
             const nbrPanierContainer = btnUpClick.previousElementSibling;
             const itemCostContainer = btnUpClick.parentElement.nextElementSibling.firstElementChild;
             let nbrProductsInCard = getNbrItemsInLocalStorage();
 
             //on met a jours la quantite sur la reference pour le localStorage
-            item.panier += 1;
+            items[idProduct].panier += 1;
 
             //on met a jours la quantite sur la reference pour l'affichage
-            nbrPanierContainer.textContent = item.panier;
+            nbrPanierContainer.textContent = items[idProduct].panier;
 
             //on met a jours la quantite pour l'affichage du panier
             nbrProductsInCard = parseInt(nbrProductsInCard);
             nbrProductsInCard += 1;
 
-            itemCostContainer.textContent = item.panier * item.price + ',00€';
+            itemCostContainer.textContent = items[idProduct].panier * items[idProduct].price + ',00€';
             localStorage.setItem('productsInCard', JSON.stringify(items));
-
-            console.log(nbrProductsInCard)
             localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
             totalcost.textContent = totalCost() + ',00€';
             showQuantityProductsInCard();
@@ -214,22 +211,20 @@ const stepDown = () => {
                     productContainer.remove();
                 } else {
                     items[idProduct].panier -= 1;
-                    btnDownClick.nextElementSibling.textContent = items[idProduct].panier;
-                    
+                    btnDownClick.nextElementSibling.textContent = items[idProduct].panier;                    
 
                     nbrProductsInCard = parseInt(nbrProductsInCard);
                     nbrProductsInCard -= 1;
+                    
+                    //on met a jours la quantite sur la reference pour l'affichage
+                    nbrPanierContainer.textContent = items[idProduct].panier;
+                    itemCostContainer.textContent = items[idProduct].panier * items[idProduct].price + ',00€';
                 }
 
                 if (nbrProductsInCard == 0) {
                     clearLocalstorage();
                     window.location.reload();
                 } else {
-                    //on met a jours la quantite sur la reference pour l'affichage
-                    nbrPanierContainer.textContent = items[idProduct].panier;
-
-                    itemCostContainer.textContent = items[idProduct].panier * items[idProduct].price + ',00€';
-
                     localStorage.setItem('productsInCard', JSON.stringify(items));
                     localStorage.setItem('nbrProductsInCard', nbrProductsInCard);
                     totalcost.textContent = totalCost() + ',00€';

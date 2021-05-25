@@ -66,7 +66,6 @@ const clickShowDetails = (dataProducts) => {
     }
 }
 
-
 //affichage du nombre d'article dans le header
 const showQuantityProductsInCard = () => {
     let nbrArticleSelectionnes = localStorage.getItem('nbrProductsInCard');

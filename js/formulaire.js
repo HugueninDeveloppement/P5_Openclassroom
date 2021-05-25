@@ -212,8 +212,8 @@ const redirectToConfirm =(confirmationFromAPI)=>{
   .reduce((total,price)=>total + price)
     const orderId = confirmationFromAPI.orderId;
     saveOrderInLocalstorage(orderId, totalPrice);
-    let url = `${window.location.origin}/htdocs/Orinoco_camera/html/commande.html?orderId=${orderId}&totalPrice=${totalPrice}`;
-  window.location.href = url;
+    let url = `${window.location.origin}/html/commande.html?orderId=${orderId}&totalPrice=${totalPrice}`;
+    window.location.href = url;
 }
 
 
