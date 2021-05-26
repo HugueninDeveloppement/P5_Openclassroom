@@ -43,7 +43,7 @@ const displayRecapCost = () =>{
     const itemContainer = document.getElementById('recapitulatifCommande');
     items.forEach(product => {
       itemContainer.innerHTML += `
-      <div class="article col-10"  id="${product.name}">
+      <div class="article col-lg-10"  id="${product.name}">
       <div class="imagepanier">
           <img class="imagearticle" src="${product.img}"> 
       </div>
@@ -58,7 +58,7 @@ const displayRecapCost = () =>{
       `
     });
     itemContainer.innerHTML += `
-    <div class="totalCostFormulaire  text-center col-10">
+    <div class="totalCostFormulaire  text-center col-lg-10 col-12">
       <span class="commandeTotalContainerTitre">Total de la commande :</span>
       <span id="totalcost">${total},00€</span> 
     </div>   `
@@ -166,6 +166,24 @@ const postData = async (url) =>{
   .then(json => redirectToConfirm(json));
 }
 
+//Récupere le nombre d'article dans le panier (number)
+const getNbrItemsInLocalStorage =() =>{
+  const nbrItems =localStorage.getItem('nbrProductsInCard');
+  return nbrItems; 
+}
+
+// function pour l'affichage du nombre d'article total present dans le panier
+const showQuantityProductsInCard=()=>{
+  const nbrArticleSelectionnes = getNbrItemsInLocalStorage();
+  let nbreArticleContainer = document.getElementsByClassName('nbrArticlePanier');
+if(nbrArticleSelectionnes){
+  nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier position-absolute top-10 start-100 translate-middle badge rounded-pill bg-secondary');
+  nbreArticleContainer[0].textContent = nbrArticleSelectionnes;
+}else{    
+  nbreArticleContainer[0].setAttribute('class', 'nbrArticlePanier');
+}
+}
+
 
 // réinitialisation du localstorage sans supprimé les anciennes commandes
 const clearLocalstorage = ()=>{
@@ -229,3 +247,4 @@ formulaire.addEventListener('submit',function(event){
 })
 
 displayRecapCost();
+showQuantityProductsInCard();

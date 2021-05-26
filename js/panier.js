@@ -72,7 +72,7 @@ const showPanier = () => {
     
     panierContainer.innerHTML += `
             <div class="commandeTotalContainer d-flex justify-content-between">
-              <button type="button" id="confirmPanier" class="btn btn-secondary text-white btn-sm col-4">confirmer la commande</button>
+              <button type="button" id="confirmPanier" class="btn btn-secondary text-white btn-sm col-lg-4">confirmer la commande</button>
               <div class="totalcommande  text-center">
                 <span class="commandeTotalContainerTitre">Total de la commande :</span>
                 <span id="totalcost">,00€</span> 
